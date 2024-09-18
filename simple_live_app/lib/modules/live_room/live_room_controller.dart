@@ -353,7 +353,7 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
         currentQuality = playQualites.length - 1;
       } else {
         //中间值
-        int middle = (playQualites.length / 2).floor();
+        int middle = (playQualites.length / 2).ceil();
         currentQuality = middle;
       }
 
