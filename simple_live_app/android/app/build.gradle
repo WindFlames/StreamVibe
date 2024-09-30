@@ -74,14 +74,14 @@ android {
 //    }
     buildTypes {
         buildTypes {
-            debug {
-                signingConfig signingConfigs.release
-            }
-            profile {
-                signingConfig signingConfigs.release
-            }
+            // debug {
+            //     signingConfig signingConfigs.release
+            // }
+            // profile {
+            //     signingConfig signingConfigs.release
+            // }
             release {
-                signingConfig signingConfigs.release
+                //signingConfig signingConfigs.release
                 minifyEnabled true
                 shrinkResources true
                 proguardFiles getDefaultProguardFile(
