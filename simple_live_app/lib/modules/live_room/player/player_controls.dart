@@ -597,7 +597,7 @@ Widget buildControls(
 
 Widget buildDanmuView(VideoState videoState, LiveRoomController controller) {
   var padding = MediaQuery.of(videoState.context).padding;
-  controller.danmakuView ??= DanmakuScreen(
+  controller.danmakuView ??= DanmakuView(
     key: controller.globalDanmuKey,
     createdController: controller.initDanmakuController,
     option: DanmakuOption(
