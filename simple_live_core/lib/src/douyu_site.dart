@@ -88,7 +88,7 @@ class DouyuSite implements LiveSite {
   Future<List<LivePlayQuality>> getPlayQualites(
       {required LiveRoomDetail detail}) async {
     var data = detail.data.toString();
-    data += "&cdn=&rate=-1&ver=Douyu_223061205&iar=1&ive=1&hevc=0&fa=0";
+    data += "&cdn=&rate=-1&ver=Douyu_223061205&iar=1&ive=1&hevc=1&fa=0";
     List<LivePlayQuality> qualities = [];
     var result = await HttpClient.instance.postJson(
       "https://www.douyu.com/lapi/live/getH5Play/${detail.roomId}",

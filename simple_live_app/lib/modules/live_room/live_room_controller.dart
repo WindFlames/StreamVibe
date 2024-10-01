@@ -72,6 +72,8 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
   /// 线路数据
   RxList<String> playUrls = RxList<String>();
 
+  final sheildPatterns = <Pattern>[];
+
   /// 当前线路
   var currentLineIndex = -1;
   var currentLineInfo = "".obs;
@@ -203,21 +205,9 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
       }
 
       // 关键词屏蔽检查
-      for (var keyword in AppSettingsController.instance.shieldList) {
-        Pattern? pattern;
-        if (Utils.isRegexFormat(keyword)) {
-          String removedSlash = Utils.removeRegexFormat(keyword);
-          try {
-            pattern = RegExp(removedSlash);
-          } catch (e) {
-            // should avoid this during add keyword
-            Log.d("关键词：$keyword 正则格式错误");
-          }
-        } else {
-          pattern = keyword;
-        }
-        if (pattern != null && msg.message.contains(pattern)) {
-          Log.d("关键词：$keyword\n已屏蔽消息内容：${msg.message}");
+      for (var pattern in sheildPatterns) {
+        if (msg.message.contains(pattern)) {
+          Log.d("关键词：${pattern.toString()}\n已屏蔽消息内容：${msg.message}");
           return;
         }
       }
@@ -316,6 +306,23 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
       }
       if (detail.value!.isRecord) {
         addSysMsg("当前主播未开播，正在轮播录像");
+      }
+      for (var keyword in AppSettingsController.instance.shieldList) {
+        Pattern? pattern;
+        if (Utils.isRegexFormat(keyword)) {
+          String removedSlash = Utils.removeRegexFormat(keyword);
+          try {
+            pattern = RegExp(removedSlash);
+          } catch (e) {
+            // should avoid this during add keyword
+            Log.d("关键词：$keyword 正则格式错误");
+          }
+        } else {
+          pattern = keyword;
+        }
+        if (pattern != null) {
+          sheildPatterns.add(pattern);
+        }
       }
       addSysMsg("开始连接弹幕服务器");
       initDanmau();
@@ -743,9 +750,24 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
         SmartDialog.showToast("请输入关键词");
         return;
       }
-
-      AppSettingsController.instance
-          .addShieldList(keywordController.text.trim());
+      var keyword = keywordController.text.trim();
+      AppSettingsController.instance.addShieldList(keyword);
+      Pattern? pattern;
+      if (Utils.isRegexFormat(keyword)) {
+        String removedSlash = Utils.removeRegexFormat(keyword);
+        try {
+          pattern = RegExp(removedSlash);
+        } catch (e) {
+          // should avoid this during add keyword
+          // Log.d("关键词：$keyword 正则格式错误");
+          // TODO: notice
+        }
+      } else {
+        pattern = keyword;
+      }
+      if (pattern != null) {
+        sheildPatterns.add(pattern);
+      }
       keywordController.text = "";
     }
 
