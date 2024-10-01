@@ -28,7 +28,8 @@ class CoreLog {
       lineLength: 120,
       colors: true,
       printEmojis: true,
-      printTime: false,
+      dateTimeFormat: DateTimeFormat.none,
+      // printTime: false,
     ),
   );
 
@@ -36,9 +37,11 @@ class CoreLog {
     if (!enableLog) {
       return;
     }
-    onPrintLog?.call(Level.debug, message);
+
     if (onPrintLog == null) {
       logger.d("${DateTime.now().toString()}\n$message");
+    } else {
+      onPrintLog!(Level.debug, message);
     }
   }
 
@@ -46,9 +49,11 @@ class CoreLog {
     if (!enableLog) {
       return;
     }
-    onPrintLog?.call(Level.info, message);
+
     if (onPrintLog == null) {
       logger.i("${DateTime.now().toString()}\n$message");
+    } else {
+      onPrintLog!(Level.info, message);
     }
   }
 
@@ -56,10 +61,12 @@ class CoreLog {
     if (!enableLog) {
       return;
     }
-    onPrintLog?.call(Level.error, message);
+
     if (onPrintLog == null) {
       logger.e("${DateTime.now().toString()}\n$message",
           stackTrace: stackTrace);
+    } else {
+      onPrintLog!(Level.error, message);
     }
   }
 
@@ -67,13 +74,15 @@ class CoreLog {
     if (!enableLog) {
       return;
     }
-    onPrintLog?.call(Level.error, e.toString());
+
     if (onPrintLog == null) {
       logger.e(
         "${DateTime.now().toString()}\n${e.toString()}",
         error: e,
         stackTrace: (e is Error) ? e.stackTrace : StackTrace.current,
       );
+    } else {
+      onPrintLog!(Level.error, e.toString());
     }
   }
 
@@ -81,9 +90,11 @@ class CoreLog {
     if (!enableLog) {
       return;
     }
-    onPrintLog?.call(Level.warning, message);
+
     if (onPrintLog == null) {
       logger.w("${DateTime.now().toString()}\n$message");
+    } else {
+      onPrintLog!(Level.warning, message);
     }
   }
 }
