@@ -54,14 +54,14 @@ jobs:
         with:
           distribution: "zulu"
           java-version: "17"
-          cache: "gradle"
+          #cache: "gradle"
 
       #设置Flutter
       - name: Flutter action
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.24.3"
-          cache: true
+          #cache: true
 
       #更新Flutter的packages
       - name: Restore packages
@@ -94,7 +94,7 @@ jobs:
       #     BUILD_TOOLS_VERSION: "34.0.0"
       #上传APK至Artifacts
       - name: Upload APK to Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: simple_live_signed
           path: |
