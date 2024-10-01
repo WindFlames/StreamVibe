@@ -89,7 +89,7 @@ class LiveRoomPage extends GetView<LiveRoomController> {
         if (controller.fullScreenState.value) {
           return PopScope(
             canPop: false,
-            onPopInvoked: (e) {
+            onPopInvokedWithResult: (e, result) {
               controller.exitFull();
             },
             child: Scaffold(

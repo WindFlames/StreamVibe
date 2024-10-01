@@ -49,7 +49,7 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
   var currentQualityInfo = "".obs;
 
   /// 线路数据
-  RxList<String> playUrls = RxList<String>();
+  RxList<LiveUrlInfo> playUrls = RxList<LiveUrlInfo>();
 
   /// 当前线路
   var currentLineIndex = -1;
@@ -249,7 +249,7 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
 
     player.open(
       Media(
-        playUrls[currentLineIndex],
+        playUrls[currentLineIndex].url,
         httpHeaders: headers,
       ),
     );

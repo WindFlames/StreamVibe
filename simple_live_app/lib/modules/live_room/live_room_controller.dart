@@ -7,7 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:media_kit/media_kit.dart';
-import 'package:ns_danmaku/ns_danmaku.dart';
+import 'package:canvas_danmaku/canvas_danmaku.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:simple_live_app/app/app_style.dart';
 import 'package:simple_live_app/app/constant.dart';
@@ -70,7 +70,7 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
   var currentQualityInfo = "".obs;
 
   /// 线路数据
-  RxList<String> playUrls = RxList<String>();
+  RxList<LiveUrlInfo> playUrls = RxList<LiveUrlInfo>();
 
   final sheildPatterns = <Pattern>[];
 
@@ -222,7 +222,7 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
       }
 
       addDanmaku([
-        DanmakuItem(
+        DanmakuContentItem(
           msg.message,
           color: Color.fromARGB(
             255,
@@ -431,7 +431,7 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
 
     player.open(
       Media(
-        playUrls[currentLineIndex],
+        playUrls[currentLineIndex].url,
         httpHeaders: headers,
       ),
     );
@@ -665,7 +665,8 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
             groupValue: currentLineIndex,
             title: Text("线路${i + 1}"),
             secondary: Text(
-              playUrls[i].contains(".flv") ? "FLV" : "HLS",
+              (playUrls[i].isH265 ? "HEVC " : "AVC  ") +
+                  (playUrls[i].url.contains(".flv") ? "FLV" : "HLS"),
             ),
             onChanged: (e) {
               Get.back();

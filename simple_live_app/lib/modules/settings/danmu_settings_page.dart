@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
-import 'package:ns_danmaku/ns_danmaku.dart';
+import 'package:canvas_danmaku/canvas_danmaku.dart';
 import 'package:simple_live_app/app/app_style.dart';
 import 'package:simple_live_app/app/controller/app_settings_controller.dart';
 import 'package:simple_live_app/routes/route_path.dart';
@@ -132,36 +133,37 @@ class DanmuSettingsView extends GetView<AppSettingsController> {
                   },
                 ),
               ),
-              AppStyle.divider,
-              Obx(
-                () => SettingsNumber(
-                  title: "字体粗细",
-                  value: controller.danmuFontWeight.value,
-                  min: 0,
-                  max: 8,
-                  step: 1,
-                  displayValue: [
-                    "极细",
-                    "很细",
-                    "细",
-                    "正常",
-                    "小粗",
-                    "偏粗",
-                    "粗",
-                    "很粗",
-                    "极粗"
-                  ][controller.danmuFontWeight.value]
-                      .toString(),
-                  onChanged: (e) {
-                    controller.setDanmuFontWeight(e);
-                    updateDanmuOption(
-                      danmakuController?.option.copyWith(
-                        fontWeight: FontWeight.values[e],
-                      ),
-                    );
-                  },
-                ),
-              ),
+              // AppStyle.divider,
+              // Obx(
+              //   () => SettingsNumber(
+              //     title: "字体粗细",
+              //     value: controller.danmuFontWeight.value,
+              //     min: 0,
+              //     max: 8,
+              //     step: 1,
+              //     displayValue: [
+              //       "极细",
+              //       "很细",
+              //       "细",
+              //       "正常",
+              //       "小粗",
+              //       "偏粗",
+              //       "粗",
+              //       "很粗",
+              //       "极粗"
+              //     ][controller.danmuFontWeight.value]
+              //         .toString(),
+              //     onChanged: (e) {
+              //       controller.setDanmuFontWeight(e);
+              //       SmartDialog.showToast("字宽不支持");
+              //       // updateDanmuOption(
+              //       //   danmakuController?.option.copyWith(
+              //       //     fontWeight: FontWeight.values[e],
+              //       //   ),
+              //       // );
+              //     },
+              //   ),
+              // ),
               AppStyle.divider,
               Obx(
                 () => SettingsNumber(
@@ -173,24 +175,37 @@ class DanmuSettingsView extends GetView<AppSettingsController> {
                   onChanged: (e) {
                     controller.setDanmuSpeed(e.toDouble());
                     updateDanmuOption(
-                      danmakuController?.option
-                          .copyWith(duration: e.toDouble()),
+                      danmakuController?.option.copyWith(duration: e),
                     );
                   },
                 ),
               ),
               AppStyle.divider,
               Obx(
-                () => SettingsNumber(
+                // () => SettingsNumber(
+                //   title: "字体描边",
+                //   value: controller.danmuStrokeWidth.toInt(),
+                //   min: 0,
+                //   max: 10,
+                //   onChanged: (e) {
+                //     controller.setDanmuStrokeWidth(e.toDouble());
+                //     updateDanmuOption(
+                //       danmakuController?.option
+                //           .copyWith(strokeWidth: e.toDouble()),
+                //     );
+                //   },
+                // ),
+                () => SettingsSwitch(
                   title: "字体描边",
-                  value: controller.danmuStrokeWidth.toInt(),
-                  min: 0,
-                  max: 10,
+                  value: controller.danmuStrokeWidth.value.toInt() == 0,
                   onChanged: (e) {
-                    controller.setDanmuStrokeWidth(e.toDouble());
+                    if (e) {
+                      controller.setDanmuStrokeWidth(0);
+                    } else {
+                      controller.setDanmuStrokeWidth(1);
+                    }
                     updateDanmuOption(
-                      danmakuController?.option
-                          .copyWith(strokeWidth: e.toDouble()),
+                      danmakuController?.option.copyWith(showStroke: e),
                     );
                   },
                 ),

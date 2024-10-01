@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:ns_danmaku/ns_danmaku.dart';
+import 'package:canvas_danmaku/canvas_danmaku.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:simple_live_app/app/app_style.dart';
 import 'package:simple_live_app/app/controller/app_settings_controller.dart';
@@ -597,12 +597,24 @@ Widget buildControls(
 
 Widget buildDanmuView(VideoState videoState, LiveRoomController controller) {
   var padding = MediaQuery.of(videoState.context).padding;
-  controller.danmakuView ??= DanmakuView(
+  controller.danmakuView ??= DanmakuScreen(
     key: controller.globalDanmuKey,
     createdController: controller.initDanmakuController,
     option: DanmakuOption(
-      fontSize: 16,
+      fontSize: AppSettingsController.instance.danmuSize.value,
+      area: AppSettingsController.instance.danmuArea.value,
+      duration: AppSettingsController.instance.danmuSpeed.value.toInt(),
+      opacity: AppSettingsController.instance.danmuOpacity.value,
+      showStroke:
+          AppSettingsController.instance.danmuStrokeWidth.value.toInt() == 0
+              ? true
+              : false,
+      // fontWeight: FontWeight
+      //     .values[AppSettingsController.instance.danmuFontWeight.value],
     ),
+    // option: DanmakuOption(
+    //   fontSize: 16,
+    // ),
   );
   return Positioned.fill(
     top: padding.top,
@@ -654,12 +666,29 @@ void showLinesInfo(LiveRoomController controller) {
                   padding: AppStyle.edgeInsetsH4,
                   margin: AppStyle.edgeInsetsL8,
                   child: Text(
-                    controller.playUrls[i].contains(".flv") ? "FLV" : "HLS",
+                    controller.playUrls[i].isH265 ? "HEVC" : "AVC",
                     style: const TextStyle(
                       fontSize: 12,
                     ),
                   ),
                 )),
+                WidgetSpan(
+                    child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: AppStyle.radius4,
+                    border: Border.all(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  padding: AppStyle.edgeInsetsH4,
+                  margin: AppStyle.edgeInsetsL8,
+                  child: Text(
+                    controller.playUrls[i].url.contains(".flv") ? "FLV" : "HLS",
+                    style: const TextStyle(
+                      fontSize: 12,
+                    ),
+                  ),
+                ))
               ],
             ),
             style: const TextStyle(fontSize: 14),

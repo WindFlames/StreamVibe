@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:ns_danmaku/ns_danmaku.dart';
+import 'package:canvas_danmaku/canvas_danmaku.dart';
 import 'package:perfect_volume_control/perfect_volume_control.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:simple_live_app/app/controller/app_settings_controller.dart';
@@ -176,17 +176,20 @@ mixin PlayerDanmakuMixin on PlayerStateMixin {
 
   void initDanmakuController(DanmakuController e) {
     danmakuController = e;
-    danmakuController?.updateOption(
-      DanmakuOption(
-        fontSize: AppSettingsController.instance.danmuSize.value,
-        area: AppSettingsController.instance.danmuArea.value,
-        duration: AppSettingsController.instance.danmuSpeed.value,
-        opacity: AppSettingsController.instance.danmuOpacity.value,
-        strokeWidth: AppSettingsController.instance.danmuStrokeWidth.value,
-        fontWeight: FontWeight
-            .values[AppSettingsController.instance.danmuFontWeight.value],
-      ),
-    );
+    // danmakuController?.updateOption(
+    //   DanmakuOption(
+    //     fontSize: AppSettingsController.instance.danmuSize.value,
+    //     area: AppSettingsController.instance.danmuArea.value,
+    //     duration: AppSettingsController.instance.danmuSpeed.value.toInt(),
+    //     opacity: AppSettingsController.instance.danmuOpacity.value,
+    //     showStroke:
+    //         AppSettingsController.instance.danmuStrokeWidth.value.toInt() == 0
+    //             ? true
+    //             : false,
+    //     // fontWeight: FontWeight
+    //     //     .values[AppSettingsController.instance.danmuFontWeight.value],
+    //   ),
+    // );
   }
 
   void updateDanmuOption(DanmakuOption? option) {
@@ -198,11 +201,15 @@ mixin PlayerDanmakuMixin on PlayerStateMixin {
     danmakuController?.clear();
   }
 
-  void addDanmaku(List<DanmakuItem> items) {
+  void addDanmaku(List<DanmakuContentItem> items) {
     if (!showDanmakuState.value) {
       return;
     }
-    danmakuController?.addItems(items);
+    if (danmakuController != null) {
+      for (var item in items) {
+        danmakuController!.addDanmaku(item);
+      }
+    }
   }
 }
 mixin PlayerSystemMixin on PlayerMixin, PlayerStateMixin, PlayerDanmakuMixin {

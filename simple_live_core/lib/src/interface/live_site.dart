@@ -71,9 +71,9 @@ class LiveSite {
   }
 
   /// 读取播放链接
-  Future<List<String>> getPlayUrls(
+  Future<List<LiveUrlInfo>> getPlayUrls(
       {required LiveRoomDetail detail, required LivePlayQuality quality}) {
-    return Future.value(<String>[]);
+    return Future.value(<LiveUrlInfo>[]);
   }
 
   /// 查询直播状态

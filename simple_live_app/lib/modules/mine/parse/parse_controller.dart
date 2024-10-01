@@ -86,12 +86,12 @@ class ParseController extends GetxController {
                   "线路${playUrls.indexOf(e) + 1}",
                 ),
                 subtitle: Text(
-                  e,
+                  e.url,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 onTap: () {
-                  Clipboard.setData(ClipboardData(text: e));
+                  Clipboard.setData(ClipboardData(text: e.url));
                   Get.back();
                   SmartDialog.showToast("已复制直链");
                 },

@@ -140,7 +140,7 @@ class BiliBiliSite implements LiveSite {
   }
 
   @override
-  Future<List<String>> getPlayUrls(
+  Future<List<LiveUrlInfo>> getPlayUrls(
       {required LiveRoomDetail detail,
       required LivePlayQuality quality}) async {
     List<String> urls = [];
@@ -180,7 +180,8 @@ class BiliBiliSite implements LiveSite {
         return -1;
       }
     });
-    return urls;
+
+    return urls.map((url) => LiveUrlInfo(url: url)).toList();
   }
 
   @override

@@ -121,10 +121,13 @@ class OtherSettingsController extends BaseController {
       type: FileType.custom,
       fileName: item.name,
     );
+
     if (filePath != null) {
       var file = File(item.path);
       await file.copy(filePath);
       SmartDialog.showToast("保存成功");
+    } else {
+      SmartDialog.showToast("请选择路径");
     }
   }
 

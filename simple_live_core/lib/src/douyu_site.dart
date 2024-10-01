@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:simple_live_core/simple_live_core.dart';
 import 'package:simple_live_core/src/common/http_client.dart';
 import 'package:simple_live_core/src/danmaku/douyu_danmaku.dart';
 import 'package:simple_live_core/src/interface/live_danmaku.dart';
@@ -95,7 +96,6 @@ class DouyuSite implements LiveSite {
       data: data,
       formUrlEncoded: true,
     );
-
     var cdns = <String>[];
     for (var item in result["data"]["cdnsWithName"]) {
       cdns.add(item["cdn"].toString());
@@ -110,36 +110,36 @@ class DouyuSite implements LiveSite {
       }
       return 0;
     });
-
     for (var item in result["data"]["multirates"]) {
       qualities.add(LivePlayQuality(
         quality: item["name"].toString(),
         data: DouyuPlayData(item["rate"], cdns),
       ));
+      // hevc: item["isH265"] as bool)
     }
     return qualities;
   }
 
   @override
-  Future<List<String>> getPlayUrls(
+  Future<List<LiveUrlInfo>> getPlayUrls(
       {required LiveRoomDetail detail,
       required LivePlayQuality quality}) async {
     var args = detail.data.toString();
     var data = quality.data as DouyuPlayData;
 
-    List<String> urls = [];
+    List<LiveUrlInfo> urls = [];
     for (var item in data.cdns) {
       var url = await getPlayUrl(detail.roomId, args, data.rate, item);
-      if (url.isNotEmpty) {
+      if (url.url.isNotEmpty) {
         urls.add(url);
       }
     }
     return urls;
   }
 
-  Future<String> getPlayUrl(
+  Future<LiveUrlInfo> getPlayUrl(
       String roomId, String args, int rate, String cdn) async {
-    args += "&cdn=$cdn&rate=$rate";
+    args += "&cdn=$cdn&rate=$rate&hevc=1";
     var result = await HttpClient.instance.postJson(
       "https://www.douyu.com/lapi/live/getH5Play/$roomId",
       data: args,
@@ -151,7 +151,16 @@ class DouyuSite implements LiveSite {
       formUrlEncoded: true,
     );
 
-    return "${result["data"]["rtmp_url"]}/${HtmlUnescape().convert(result["data"]["rtmp_live"].toString())}";
+    var isH265 = false;
+    for (var item in result["data"]["cdnsWithName"]) {
+      if (item["cdn"] == cdn) {
+        isH265 = item["isH265"] as bool;
+      }
+    }
+    return LiveUrlInfo(
+        url:
+            "${result["data"]["rtmp_url"]}/${HtmlUnescape().convert(result["data"]["rtmp_live"].toString())}",
+        isH265: isH265);
   }
 
   @override

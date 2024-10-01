@@ -175,10 +175,12 @@ class HuyaSite implements LiveSite {
   }
 
   @override
-  Future<List<String>> getPlayUrls(
+  Future<List<LiveUrlInfo>> getPlayUrls(
       {required LiveRoomDetail detail,
       required LivePlayQuality quality}) async {
-    return quality.data as List<String>;
+    return (quality.data as List<String>)
+        .map((url) => LiveUrlInfo(url: url))
+        .toList();
   }
 
   @override

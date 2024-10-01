@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:json/json.dart';
 
+// @JsonCodable()
 class LiveRoomItem {
   /// 房间ID
   final String roomId;
@@ -32,5 +34,6 @@ class LiveRoomItem {
       "userName": userName,
       "online": online,
     });
+    // return json.encode(this.toJson());
   }
 }
