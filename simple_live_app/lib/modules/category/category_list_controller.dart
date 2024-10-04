@@ -5,18 +5,23 @@ import 'package:simple_live_core/simple_live_core.dart';
 
 class CategoryListController extends BasePageController<AppLiveCategory> {
   final Site site;
+
   CategoryListController(this.site);
 
   @override
   Future<List<AppLiveCategory>> getData(int page, int pageSize) async {
     var result = await site.liveSite.getCategories();
-
-    return result.map((e) => AppLiveCategory.fromLiveCategory(e)).toList();
+    List<AppLiveCategory> categories = [];
+    for (var item in result) {
+      categories.add(AppLiveCategory.fromLiveCategory(item));
+    }
+    return categories;
   }
 }
 
 class AppLiveCategory extends LiveCategory {
   var showAll = false.obs;
+
   AppLiveCategory({
     required super.id,
     required super.name,

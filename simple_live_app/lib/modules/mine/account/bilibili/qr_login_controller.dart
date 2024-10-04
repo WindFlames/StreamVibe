@@ -41,6 +41,17 @@ class BiliBiliQRLoginController extends GetxController {
       var result = await HttpClient.instance.getJson(
         "https://passport.bilibili.com/x/passport-login/web/qrcode/generate",
       );
+      /*
+     {
+    "code": 0,
+    "message": "0",
+    "ttl": 1,
+    "data": {
+        "url": "https://account.bilibili.com/h5/account-h5/auth/scan-web?navhide=1&callback=close&qrcode_key=746e3e457f43f7f036de5c8a9beb0191&from=",
+        "qrcode_key": "746e3e457f43f7f036de5c8a9beb0191"
+    }
+}
+      * */
       if (result["code"] != 0) {
         throw result["message"];
       }
@@ -72,6 +83,20 @@ class BiliBiliQRLoginController extends GetxController {
           "qrcode_key": qrcodeKey,
         },
       );
+      /*
+      {
+  "code": 0,
+  "message": "0",
+  "ttl": 1,
+  "data": {
+    "url": "",
+    "refresh_token": "",
+    "timestamp": 0,
+    "code": 86038,
+    "message": "二维码已失效"
+  }
+}
+      * */
       if (response.data["code"] != 0) {
         throw response.data["message"];
       }
