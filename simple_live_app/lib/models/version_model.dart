@@ -1,12 +1,5 @@
 import 'dart:convert';
 
-T? asT<T>(dynamic value) {
-  if (value is T) {
-    return value;
-  }
-  return null;
-}
-
 class VersionModel {
   VersionModel({
     required this.version,
@@ -15,12 +8,7 @@ class VersionModel {
     required this.downloadUrl,
   });
 
-  factory VersionModel.fromJson(Map<String, dynamic> json) => VersionModel(
-        version: asT<String>(json['version'])!,
-        versionNum: asT<int>(json['version_num'])!,
-        versionDesc: asT<String>(json['version_desc'])!,
-        downloadUrl: asT<String>(json['download_url'])!,
-      );
+
 
   String version;
   int versionNum;
@@ -32,10 +20,21 @@ class VersionModel {
     return jsonEncode(this);
   }
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'version': version,
-        'version_num': versionNum,
-        'version_desc': versionDesc,
-        'download_url': downloadUrl,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      "version": this.version,
+      "versionNum": this.versionNum,
+      "versionDesc": this.versionDesc,
+      "downloadUrl": this.downloadUrl,
+    };
+  }
+
+  factory VersionModel.fromJson(Map<String, dynamic> json) {
+    return VersionModel(
+      version: json["version"],
+      versionNum: int.parse(json["versionNum"]),
+      versionDesc: json["versionDesc"],
+      downloadUrl: json["downloadUrl"],
+    );
+  }
 }

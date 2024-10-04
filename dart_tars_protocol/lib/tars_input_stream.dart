@@ -91,10 +91,10 @@ class BinaryReader {
 }
 
 class TarsInputStream {
-  late BinaryReader br;
-  TarsInputStream(Uint8List _ls) {
+   BinaryReader br;
+  TarsInputStream(Uint8List _ls) :
     br = BinaryReader(_ls);
-  }
+
 
   static int readBinaryReaderHead(HeadData hd, BinaryReader bb) {
     if (bb.position >= bb.length) {

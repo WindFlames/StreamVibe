@@ -12,14 +12,15 @@ import 'package:simple_live_app/widgets/status/app_loadding_widget.dart';
 
 class DouyinSearchView extends StatelessWidget {
   const DouyinSearchView({Key? key}) : super(key: key);
+
   DouyinSearchController get controller => Get.find<DouyinSearchController>();
 
   @override
   Widget build(BuildContext context) {
-    var roomRowCount = MediaQuery.of(context).size.width ~/ 200;
+    var roomRowCount = MediaQuery.sizeOf(context).width ~/ 200;
     if (roomRowCount < 2) roomRowCount = 2;
 
-    var userRowCount = MediaQuery.of(context).size.width ~/ 500;
+    var userRowCount = MediaQuery.sizeOf(context).width ~/ 500;
     if (userRowCount < 1) userRowCount = 1;
     return KeepAliveWrapper(
       child: Stack(
@@ -53,13 +54,11 @@ class DouyinSearchView extends StatelessWidget {
               onWebViewCreated: controller.onWebViewCreated,
               onLoadStop: controller.onLoadStop,
               onLoadStart: controller.onLoadStart,
-              initialOptions: InAppWebViewGroupOptions(
-                crossPlatform: InAppWebViewOptions(
-                  useOnLoadResource: true,
-                  userAgent:
-                      "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/118.0.0.0",
-                  useShouldOverrideUrlLoading: true,
-                ),
+              initialSettings: InAppWebViewSettings(
+                useOnLoadResource: true,
+                userAgent:
+                    "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/118.0.0.0",
+                useShouldOverrideUrlLoading: true,
               ),
               onCreateWindow: controller.onCreateWindow,
               shouldOverrideUrlLoading:

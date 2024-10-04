@@ -109,7 +109,7 @@ class LogFileWriter {
     fileName = "$dt.log";
     initFile();
   }
-  IOSink? fileWriter;
+   IOSink? fileWriter;
   void initFile() async {
     var supportDir = await getApplicationSupportDirectory();
     var logDir = Directory("${supportDir.path}/log");
@@ -122,9 +122,10 @@ class LogFileWriter {
   }
 
   void write(String content) {
-    fileWriter?.write(content);
-    fileWriter?.write("\r\n");
-  }
+    if(fileWriter!=null){
+    fileWriter!.write(content);
+    fileWriter!.write("\r\n");
+  }}
 
   Future close() async {
     await fileWriter?.close();

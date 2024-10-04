@@ -10,7 +10,7 @@ import 'package:simple_live_core/simple_live_core.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class DouyinSearchController extends BaseController {
-  InAppWebViewController? webViewController;
+  late InAppWebViewController webViewController;
 
   void onWebViewCreated(InAppWebViewController controller) {
     webViewController = controller;
@@ -36,9 +36,9 @@ class DouyinSearchController extends BaseController {
     searchUrl =
         "https://www.douyin.com/search/${Uri.encodeComponent(keyword)}?type=live";
     if (Platform.isAndroid || Platform.isIOS) {
-      webViewController!.loadUrl(
+      webViewController.loadUrl(
         urlRequest: URLRequest(
-          url: Uri.parse(searchUrl),
+          url: WebUri(searchUrl),
         ),
       );
     }

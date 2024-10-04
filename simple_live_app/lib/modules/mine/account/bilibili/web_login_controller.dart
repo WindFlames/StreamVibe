@@ -13,7 +13,7 @@ class BiliBiliWebLoginController extends BaseController {
     webViewController = controller;
     webViewController.loadUrl(
       urlRequest: URLRequest(
-        url: Uri.https("passport.bilibili.com", "/login"),
+        url: WebUri( Uri.https("passport.bilibili.com", "/login").toString()),
       ),
     );
   }
@@ -35,7 +35,7 @@ class BiliBiliWebLoginController extends BaseController {
   Future<bool> logined() async {
     try {
       var cookies =
-          await cookieManager.getCookies(url: Uri.https("bilibili.com"));
+          await cookieManager.getCookies(url: WebUri( Uri.https("bilibili.com").toString()));
       if (cookies.isEmpty) {
         return false;
       }

@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:canvas_danmaku/models/danmaku_content_item.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
-import 'package:media_kit/media_kit.dart';
-import 'package:canvas_danmaku/canvas_danmaku.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:simple_live_app/app/app_style.dart';
 import 'package:simple_live_app/app/constant.dart';
@@ -19,6 +18,7 @@ import 'package:simple_live_app/app/utils.dart';
 import 'package:simple_live_app/models/db/follow_user.dart';
 import 'package:simple_live_app/models/db/history.dart';
 import 'package:simple_live_app/modules/live_room/player/player_controller.dart';
+import 'package:simple_live_app/modules/live_room/player/video_controller.dart';
 import 'package:simple_live_app/modules/settings/danmu_settings_page.dart';
 import 'package:simple_live_app/services/db_service.dart';
 import 'package:simple_live_app/services/follow_service.dart';
@@ -27,12 +27,20 @@ import 'package:simple_live_app/widgets/follow_user_item.dart';
 import 'package:simple_live_core/simple_live_core.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
-
-class LiveRoomController extends PlayerController with WidgetsBindingObserver {
+import 'package:simple_live_app/app/controller/base_controller.dart';
+class LiveRoomController  extends BaseController with WidgetsBindingObserver,
+PlayerStateMixin,
+PlayerDanmakuMixin,
+PlayerSystemMixin,
+PlayerGestureControlMixin
+{
   final Site pSite;
   final String pRoomId;
   late LiveDanmaku liveDanmaku;
-  LiveRoomController({
+   VideoController? videoController;
+  final playerKey = GlobalKey();
+  final danmakuViewKey = GlobalKey();
+   LiveRoomController({
     required this.pSite,
     required this.pRoomId,
   }) {
@@ -77,7 +85,7 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
   /// 当前线路
   var currentLineIndex = -1;
   var currentLineInfo = "".obs;
-
+  var videoPrepared = false.obs;
   /// 退出倒计时
   var countdown = 60.obs;
 
@@ -417,24 +425,69 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
     Map<String, String> headers = {};
     if (site.id == Constant.kBiliBili) {
       headers = {
-        "referer": "https://live.bilibili.com",
+       // "cookie": AppSettingsController.instance.bilibiliCookie.value,
+        "authority": "api.bilibili.com",
+        "accept":
+        "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "accept-language": "zh-CN,zh;q=0.9",
+        "cache-control": "no-cache",
+        "dnt": "1",
+        "pragma": "no-cache",
+        "sec-ch-ua": '"Not A(Brand";v="99", "Google Chrome";v="121", "Chromium";v="121"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"macOS"',
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-site": "none",
+        "sec-fetch-user": "?1",
+        "upgrade-insecure-requests": "1",
         "user-agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.188"
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+        "referer": "https://live.bilibili.com"
       };
     } else if (site.id == Constant.kHuya) {
       headers = {
-        "referer": "https://www.huya.com",
-        "user-agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0"
+        "Referer": "https://www.huya.com",
+        "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0"
       };
     }
 
-    player.open(
-      Media(
-        playUrls[currentLineIndex].url,
-        httpHeaders: headers,
-      ),
+    videoController = VideoController(
+      playerKey: playerKey,
+      //room: detail.value!,
+      datasourceType: 'network',
+      datasource: playUrls[currentLineIndex].url,
+      //allowScreenKeepOn: settings.enableScreenKeepOn.value,
+      allowBackgroundPlay: AppSettingsController.instance.playerAutoPause.value,
+      //fullScreenByDefault: settings.enableFullScreenDefault.value,
+      autoPlay: true,
+      headers: headers,
+      qualiteName: qualites[currentQuality].quality,
+      currentLineIndex: currentLineIndex,
+      currentQuality: currentQuality,
     );
+    videoPrepared.value = true;
+    // if (site.id == Constant.kBiliBili) {
+    //   headers = {
+    //     "referer": "https://live.bilibili.com",
+    //     "user-agent":
+    //         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.188"
+    //   };
+    // } else if (site.id == Constant.kHuya) {
+    //   headers = {
+    //     "referer": "https://www.huya.com",
+    //     "user-agent":
+    //         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0"
+    //   };
+    // }
+
+    // player.open(
+    //   Media(
+    //     playUrls[currentLineIndex].url,
+    //     httpHeaders: headers,
+    //   ),
+    // );
 
     Log.d("播放链接\r\n：${playUrls[currentLineIndex]}");
   }
@@ -621,7 +674,7 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
                 max: 100,
                 value: AppSettingsController.instance.playerVolume.value,
                 onChanged: (newValue) {
-                  player.setVolume(newValue);
+                  //player.setVolume(newValue);
                   AppSettingsController.instance.setPlayerVolume(newValue);
                 },
               ),
@@ -997,7 +1050,7 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
     liveDanmaku = site.liveSite.getDanmaku();
 
     // 停止播放
-    await player.stop();
+    //await player.stop();
 
     // 刷新信息
     loadData();

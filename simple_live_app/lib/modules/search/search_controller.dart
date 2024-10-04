@@ -70,9 +70,10 @@ class AppSearchController extends GetxController
       //   controller.reloadWebView();
       // } else {
       var controller = Get.find<SearchListController>(tag: site.id);
-      controller.clear();
-      controller.keyword = searchController.text;
-      controller.searchMode.value = searchMode.value;
+      controller
+          ..clear()
+      ..keyword = searchController.text
+      ..searchMode.value = searchMode.value;
       //}
     }
     // if (Sites.supportSites[index].id != Constant.kDouyin) {

@@ -4,10 +4,10 @@ import 'package:dart_tars_protocol/tars_encode_exception.dart';
 import 'package:dart_tars_protocol/tars_struct.dart';
 
 class TarsDisplayer {
-  late StringBuffer sb;
+  StringBuffer sb;
   int _level = 0;
-  TarsDisplayer(StringBuffer sb, {int level = 0}) {
-    this.sb = sb;
+
+  TarsDisplayer(this.sb, {level = 0}) {
     _level = level;
   }
 
@@ -17,69 +17,55 @@ class TarsDisplayer {
     }
 
     if (fieldName != null) {
-      sb.write(fieldName);
-      sb.write(': ');
+      sb
+        ..write(fieldName)
+        ..write(': ');
     }
   }
 
   TarsDisplayer? Display(dynamic value, String? fieldName) {
     if (value is bool) {
       return DisplayBool(value, fieldName);
-    }
-    if (value is int) {
+    } else if (value is int) {
       return DisplayInt(value, fieldName);
-    }
-    if (value is double) {
+    } else if (value is double) {
       return DisplayDouble(value, fieldName);
-    }
-    if (value is String) {
+    } else if (value is String) {
       return DisplayString(value, fieldName);
-    }
-    if (value is Uint8List) {
+    } else if (value is Uint8List) {
       return DisplayUint8List(value, fieldName);
-    }
-    if (value is List) {
+    } else if (value is List) {
       return DisplayArray(value, fieldName);
-    }
-    if (value is Map) {
+    } else if (value is Map) {
       return DisplayMap(value, fieldName);
-    }
-    if (value is TarsStruct) {
+    } else if (value is TarsStruct) {
       return DisplayTarsStruct(value, fieldName);
+    } else {
+      throw TarsEncodeException('write object error: unsupported type.');
     }
-    throw TarsEncodeException('write object error: unsupport type.');
   }
 
   TarsDisplayer DisplayBool(bool b, String? fieldName) {
     ps(fieldName);
-    sb.write(b ? 'T' : 'F');
-    sb.write('\n');
+    sb.writeln(b ? 'T' : 'F');
     return this;
   }
 
   TarsDisplayer DisplayInt(int n, String? fieldName) {
     ps(fieldName);
-    sb.write(n);
-    sb.write('\n');
+    sb.writeln(n);
     return this;
   }
 
   TarsDisplayer DisplayDouble(double n, String? fieldName) {
     ps(fieldName);
-    sb.write(n);
-    sb.write('\n');
+    sb.writeln(n);
     return this;
   }
 
   TarsDisplayer DisplayString(String? s, String? fieldName) {
     ps(fieldName);
-    if (null == s) {
-      sb.write('null');
-      sb.write('\n');
-    } else {
-      sb.write(s);
-      sb.write('\n');
-    }
+      sb.writeln(s ?? 'null');
 
     return this;
   }
@@ -87,19 +73,16 @@ class TarsDisplayer {
   TarsDisplayer DisplayUint8List(Uint8List? v, String? fieldName) {
     ps(fieldName);
     if (null == v) {
-      sb.write('null');
-      sb.write('\n');
+      sb.writeln('null');
       return this;
     }
     if (v.isEmpty) {
       sb.write(v.length);
-      sb.write(', []');
-      sb.write('\n');
+      sb.writeln(', []');
       return this;
     }
     sb.write(v.length);
-    sb.write(', []');
-    sb.write('\n');
+    sb.writeln(', []');
     var jd = TarsDisplayer(sb, level: _level + 1);
     for (var o in v) {
       jd.Display(o, null);
@@ -112,19 +95,16 @@ class TarsDisplayer {
   TarsDisplayer DisplayMap<K, V>(Map<K, V>? m, String? fieldName) {
     ps(fieldName);
     if (null == m) {
-      sb.write('null');
-      sb.write('\n');
+      sb.writeln('null');
       return this;
     }
     if (m.isEmpty) {
       sb.write(m.length);
-      sb.write(', {}');
-      sb.write('\n');
+      sb.writeln(', {}');
       return this;
     }
     sb.write(m.length);
-    sb.write(', {');
-    sb.write('\n');
+    sb.writeln(', {');
     var jd1 = TarsDisplayer(sb, level: _level + 1);
     var jd = TarsDisplayer(sb, level: _level + 2);
     for (var key in m.keys) {
@@ -140,19 +120,16 @@ class TarsDisplayer {
   TarsDisplayer DisplayArray<T>(List<T>? v, String? fieldName) {
     ps(fieldName);
     if (null == v) {
-      sb.write('null');
-      sb.write('\n');
+      sb.writeln('null');
       return this;
     }
     if (v.isEmpty) {
       sb.write(v.length);
-      sb.write(', []');
-      sb.write('\n');
+      sb.writeln(', []');
       return this;
     }
     sb.write(v.length);
-    sb.write(', [');
-    sb.write('\n');
+    sb.writeln(', [');
     var jd = TarsDisplayer(sb, level: _level + 1);
     for (var o in v) {
       jd.Display(o, null);
@@ -164,8 +141,7 @@ class TarsDisplayer {
   TarsDisplayer DisplayList<T>(List<T>? v, String? fieldName) {
     if (null == v) {
       ps(fieldName);
-      sb.write('null');
-      sb.write('\n');
+      sb.writeln('null');
       return this;
     } else {
       for (var item in v) {

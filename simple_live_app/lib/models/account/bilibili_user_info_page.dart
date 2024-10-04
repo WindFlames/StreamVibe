@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:json_annotation/json_annotation.dart';
-@JsonSerializable()
 class BiliBiliUserInfoModel {
   BiliBiliUserInfoModel({
     this.mid,
@@ -28,10 +26,29 @@ class BiliBiliUserInfoModel {
     return jsonEncode(this);
   }
 
-  /// Connect the generated [_$PersonFromJson] function to the `fromJson`
-  /// factory.
-  factory BiliBiliUserInfoModel.fromJson(Map<String, dynamic> json) => _$BiliBiliUserInfoModelFromJson(json);
+  factory BiliBiliUserInfoModel.fromJson(Map<String, dynamic> json) {
+    return BiliBiliUserInfoModel(
+      mid: int.parse(json["mid"]),
+      uname: json["uname"],
+      userid: json["userid"],
+      sign: json["sign"],
+      birthday: json["birthday"],
+      sex: json["sex"],
+      nickFree: json["nickFree"].toLowerCase() == 'true',
+      rank: json["rank"],
+    );
+  }
 
-  /// Connect the generated [_$PersonToJson] function to the `toJson` method.
-  Map<String, dynamic> toJson() => _$BiliBiliUserInfoModelToJson(this);
+  Map<String, dynamic> toJson() {
+    return {
+      "mid": this.mid,
+      "uname": this.uname,
+      "userid": this.userid,
+      "sign": this.sign,
+      "birthday": this.birthday,
+      "sex": this.sex,
+      "nickFree": this.nickFree,
+      "rank": this.rank,
+    };
+  }
 }

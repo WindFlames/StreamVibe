@@ -13,7 +13,7 @@ class HistoryPage extends GetView<HistoryController> {
 
   @override
   Widget build(BuildContext context) {
-    var rowCount = MediaQuery.of(context).size.width ~/ 500;
+    var rowCount = MediaQuery.sizeOf(context).width ~/ 500;
     if (rowCount < 1) rowCount = 1;
     return Scaffold(
       appBar: AppBar(

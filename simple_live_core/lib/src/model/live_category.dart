@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:json/json.dart';
 
 class LiveCategory {
   final String name;

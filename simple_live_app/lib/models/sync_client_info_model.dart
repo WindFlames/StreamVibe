@@ -1,11 +1,5 @@
 import 'dart:convert';
 
-T? asT<T>(dynamic value) {
-  if (value is T) {
-    return value;
-  }
-  return null;
-}
 
 class SyncClientInfoModel {
   SyncClientInfoModel({
@@ -16,14 +10,7 @@ class SyncClientInfoModel {
     required this.type,
   });
 
-  factory SyncClientInfoModel.fromJson(Map<String, dynamic> json) =>
-      SyncClientInfoModel(
-        type: asT<String>(json['type'])!,
-        name: asT<String>(json['name'])!,
-        version: asT<String>(json['version'])!,
-        address: asT<String>(json['address'])!,
-        port: asT<int>(json['port'])!,
-      );
+
   String type;
   String name;
   String version;
@@ -35,11 +22,23 @@ class SyncClientInfoModel {
     return jsonEncode(this);
   }
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'name': name,
-        'version': version,
-        'address': address,
-        'port': port,
-        'type': type,
-      };
+  factory SyncClientInfoModel.fromJson(Map<String, dynamic> json) {
+    return SyncClientInfoModel(
+      type: json["type"],
+      name: json["name"],
+      version: json["version"],
+      address: json["address"],
+      port: int.parse(json["port"]),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "type": this.type,
+      "name": this.name,
+      "version": this.version,
+      "address": this.address,
+      "port": this.port,
+    };
+  }
 }

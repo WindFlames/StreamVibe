@@ -17,10 +17,10 @@ class SearchListView extends StatelessWidget {
       Get.find<SearchListController>(tag: tag);
   @override
   Widget build(BuildContext context) {
-    var roomRowCount = MediaQuery.of(context).size.width ~/ 200;
+    var roomRowCount = MediaQuery.sizeOf(context).width ~/ 200;
     if (roomRowCount < 2) roomRowCount = 2;
 
-    var userRowCount = MediaQuery.of(context).size.width ~/ 500;
+    var userRowCount = MediaQuery.sizeOf(context).width ~/ 500;
     if (userRowCount < 1) userRowCount = 1;
     return KeepAliveWrapper(
       child: Obx(

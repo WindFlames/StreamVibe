@@ -344,6 +344,7 @@ class Utils {
   }
 
   static void checkUpdate({bool showMsg = false}) async {
+    return;
     try {
       int currentVer = Utils.parseVersion(packageInfo.version);
       CommonRequest request = CommonRequest();

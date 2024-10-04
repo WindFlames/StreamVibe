@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:auto_orientation/auto_orientation.dart';
+import 'package:canvas_danmaku/danmaku_controller.dart';
+import 'package:canvas_danmaku/models/danmaku_content_item.dart';
+import 'package:canvas_danmaku/models/danmaku_option.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:floating/floating.dart';
@@ -11,7 +14,6 @@ import 'package:get/get.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:canvas_danmaku/canvas_danmaku.dart';
 import 'package:perfect_volume_control/perfect_volume_control.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:simple_live_app/app/controller/app_settings_controller.dart';
@@ -24,8 +26,6 @@ import 'package:window_manager/window_manager.dart';
 
 mixin PlayerMixin {
   GlobalKey<VideoState> globalPlayerKey = GlobalKey<VideoState>();
-  GlobalKey globalDanmuKey = GlobalKey();
-
   /// 播放器实例
   late final player = Player(
     configuration: PlayerConfiguration(
@@ -59,7 +59,7 @@ mixin PlayerMixin {
               ),
   );
 }
-mixin PlayerStateMixin on PlayerMixin {
+mixin PlayerStateMixin  {
   ///音量控制条计时器
   Timer? hidevolumeTimer;
 
@@ -145,35 +145,35 @@ mixin PlayerStateMixin on PlayerMixin {
   }
 
   void updateScaleMode() {
-    var boxFit = BoxFit.contain;
-    double? aspectRatio;
-    if (player.state.width != null && player.state.height != null) {
-      aspectRatio = player.state.width! / player.state.height!;
-    }
-
-    if (AppSettingsController.instance.scaleMode.value == 0) {
-      boxFit = BoxFit.contain;
-    } else if (AppSettingsController.instance.scaleMode.value == 1) {
-      boxFit = BoxFit.fill;
-    } else if (AppSettingsController.instance.scaleMode.value == 2) {
-      boxFit = BoxFit.cover;
-    } else if (AppSettingsController.instance.scaleMode.value == 3) {
-      boxFit = BoxFit.contain;
-      aspectRatio = 16 / 9;
-    } else if (AppSettingsController.instance.scaleMode.value == 4) {
-      boxFit = BoxFit.contain;
-      aspectRatio = 4 / 3;
-    }
-    globalPlayerKey.currentState?.update(
-      aspectRatio: aspectRatio,
-      fit: boxFit,
-    );
+    // var boxFit = BoxFit.contain;
+    // double? aspectRatio;
+    // if (player.state.width != null && player.state.height != null) {
+    //   aspectRatio = player.state.width! / player.state.height!;
+    // }
+    //
+    // if (AppSettingsController.instance.scaleMode.value == 0) {
+    //   boxFit = BoxFit.contain;
+    // } else if (AppSettingsController.instance.scaleMode.value == 1) {
+    //   boxFit = BoxFit.fill;
+    // } else if (AppSettingsController.instance.scaleMode.value == 2) {
+    //   boxFit = BoxFit.cover;
+    // } else if (AppSettingsController.instance.scaleMode.value == 3) {
+    //   boxFit = BoxFit.contain;
+    //   aspectRatio = 16 / 9;
+    // } else if (AppSettingsController.instance.scaleMode.value == 4) {
+    //   boxFit = BoxFit.contain;
+    //   aspectRatio = 4 / 3;
+    // }
+    // globalPlayerKey.currentState?.update(
+    //   aspectRatio: aspectRatio,
+    //   fit: boxFit,
+    // );
   }
 }
 mixin PlayerDanmakuMixin on PlayerStateMixin {
   /// 弹幕控制器
   DanmakuController? danmakuController;
-
+  GlobalKey globalDanmuKey = GlobalKey();
   void initDanmakuController(DanmakuController e) {
     danmakuController = e;
     // danmakuController?.updateOption(
@@ -212,7 +212,7 @@ mixin PlayerDanmakuMixin on PlayerStateMixin {
     }
   }
 }
-mixin PlayerSystemMixin on PlayerMixin, PlayerStateMixin, PlayerDanmakuMixin {
+mixin PlayerSystemMixin on  PlayerStateMixin, PlayerDanmakuMixin {
   final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
   final screenBrightness = ScreenBrightness();
 
@@ -240,7 +240,8 @@ mixin PlayerSystemMixin on PlayerMixin, PlayerStateMixin, PlayerDanmakuMixin {
   /// 释放一些系统状态
   Future resetSystem() async {
     _pipSubscription?.cancel();
-    pip.dispose();
+    await pip.cancelOnLeavePiP();
+    //pip.dispose();
     await SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.edgeToEdge,
       overlays: SystemUiOverlay.values,
@@ -304,17 +305,17 @@ mixin PlayerSystemMixin on PlayerMixin, PlayerStateMixin, PlayerDanmakuMixin {
 
       windowManager.setTitleBarStyle(TitleBarStyle.hidden);
       // 获取视频窗口大小
-      var width = player.state.width ?? 16;
-      var height = player.state.height ?? 9;
-
-      // 横屏还是竖屏
-      if (height > width) {
-        var aspectRatio = width / height;
-        windowManager.setSize(Size(400, 400 / aspectRatio));
-      } else {
-        var aspectRatio = height / width;
-        windowManager.setSize(Size(280 / aspectRatio, 280));
-      }
+      // var width = player.state.width ?? 16;
+      // var height = player.state.height ?? 9;
+      //
+      // // 横屏还是竖屏
+      // if (height > width) {
+      //   var aspectRatio = width / height;
+      //   windowManager.setSize(Size(400, 400 / aspectRatio));
+      // } else {
+      //   var aspectRatio = height / width;
+      //   windowManager.setSize(Size(280 / aspectRatio, 280));
+      // }
 
       windowManager.setAlwaysOnTop(true);
     }
@@ -367,50 +368,51 @@ mixin PlayerSystemMixin on PlayerMixin, PlayerStateMixin, PlayerDanmakuMixin {
   }
 
   Future saveScreenshot() async {
-    try {
-      SmartDialog.showLoading(msg: "正在保存截图");
-      //检查相册权限,仅iOS需要
-      var permission = await Utils.checkPhotoPermission();
-      if (!permission) {
-        SmartDialog.showToast("没有相册权限");
-        SmartDialog.dismiss(status: SmartStatus.loading);
-        return;
-      }
-
-      var imageData = await player.screenshot();
-      if (imageData == null) {
-        SmartDialog.showToast("截图失败,数据为空");
-        SmartDialog.dismiss(status: SmartStatus.loading);
-        return;
-      }
-
-      if (Platform.isIOS || Platform.isAndroid) {
-        await ImageGallerySaver.saveImage(
-          imageData,
-        );
-        SmartDialog.showToast("已保存截图至相册");
-      } else {
-        //选择保存文件夹
-        var path = await FilePicker.platform.saveFile(
-          allowedExtensions: ["jpg"],
-          type: FileType.image,
-          fileName: "${DateTime.now().millisecondsSinceEpoch}.jpg",
-        );
-        if (path == null) {
-          SmartDialog.showToast("取消保存");
-          SmartDialog.dismiss(status: SmartStatus.loading);
-          return;
-        }
-        var file = File(path);
-        await file.writeAsBytes(imageData);
-        SmartDialog.showToast("已保存截图至${file.path}");
-      }
-    } catch (e) {
-      Log.logPrint(e);
-      SmartDialog.showToast("截图失败");
-    } finally {
-      SmartDialog.dismiss(status: SmartStatus.loading);
-    }
+    // try {
+    //   SmartDialog.showLoading(msg: "正在保存截图");
+    //   //检查相册权限,仅iOS需要
+    //   var permission = await Utils.checkPhotoPermission();
+    //   if (!permission) {
+    //     SmartDialog.showToast("没有相册权限");
+    //     SmartDialog.dismiss(status: SmartStatus.loading);
+    //     return;
+    //   }
+    //
+    //   var imageData = await player.screenshot();
+    //   if (imageData == null) {
+    //     SmartDialog.showToast("截图失败,数据为空");
+    //     SmartDialog.dismiss(status: SmartStatus.loading);
+    //     return;
+    //   }
+    //
+    //   if (Platform.isIOS || Platform.isAndroid) {
+    //     await ImageGallerySaver.saveImage(
+    //       imageData,
+    //     );
+    //     SmartDialog.showToast("已保存截图至相册");
+    //   } else {
+    //     //选择保存文件夹
+    //     var path = await FilePicker.platform.saveFile(
+    //       allowedExtensions: ["jpg"],
+    //       type: FileType.image,
+    //       fileName: "${DateTime.now().millisecondsSinceEpoch}.jpg",
+    //     );
+    //     if (path == null) {
+    //       SmartDialog.showToast("取消保存");
+    //       SmartDialog.dismiss(status: SmartStatus.loading);
+    //       return;
+    //     }
+    //     var file = File(path);
+    //     await file.writeAsBytes(imageData);
+    //     SmartDialog.showToast("已保存截图至${file.path}");
+    //   }
+    // } catch (e) {
+    //   Log.logPrint(e);
+    //   SmartDialog.showToast("截图失败");
+    // } finally {
+    //   SmartDialog.dismiss(status: SmartStatus.loading);
+    // }
+    return Future(()=>{});
   }
 
   /// 开启小窗播放前弹幕状态
@@ -435,19 +437,20 @@ mixin PlayerSystemMixin on PlayerMixin, PlayerStateMixin, PlayerDanmakuMixin {
     showControlsState.value = false;
 
     //监听事件
-    var width = player.state.width ?? 0;
-    var height = player.state.height ?? 0;
-    Rational ratio = const Rational.landscape();
-    if (height > width) {
-      ratio = const Rational.vertical();
-    } else {
-      ratio = const Rational.landscape();
-    }
-    await pip.enable(
-      aspectRatio: ratio,
-    );
+    // var width = player.state.width ?? 0;
+    // var height = player.state.height ?? 0;
+    // Rational ratio = const Rational.landscape();
+    // if (height > width) {
+    //   ratio = const Rational.vertical();
+    // } else {
+    //   ratio = const Rational.landscape();
+    // }
+    // await pip.enable(
+    //   aspectRatio: ratio,
+    // );
+    await pip.enable(const OnLeavePiP(aspectRatio: Rational.landscape()));
 
-    _pipSubscription ??= pip.pipStatus$.listen((event) {
+    _pipSubscription ??= pip.pipStatusStream.listen((event) {
       if (event == PiPStatus.disabled) {
         danmakuController?.clear();
         showDanmakuState.value = danmakuStateBeforePIP;
@@ -457,7 +460,7 @@ mixin PlayerSystemMixin on PlayerMixin, PlayerStateMixin, PlayerDanmakuMixin {
   }
 }
 mixin PlayerGestureControlMixin
-    on PlayerStateMixin, PlayerMixin, PlayerSystemMixin {
+    on PlayerStateMixin, PlayerSystemMixin {
   /// 单击显示/隐藏控制器
   void onTap() {
     if (showControlsState.value) {
