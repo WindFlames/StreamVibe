@@ -20,16 +20,16 @@ class HuyaSite implements LiveSite {
       "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.91 Mobile Safari/537.36 Edg/117.0.0.0";
 
   @override
-  String id = "huya";
+  final String id = "huya";
 
   @override
-  String name = "虎牙直播";
+  final String name = "虎牙直播";
 
   @override
   LiveDanmaku getDanmaku() => HuyaDanmaku();
 
   @override
-  Future<List<LiveCategory>> getCategores() async {
+  Future<List<LiveCategory>> getCategories() async {
     List<LiveCategory> categories = [
       LiveCategory(id: "1", name: "网游", children: []),
       LiveCategory(id: "2", name: "单机", children: []),
@@ -288,8 +288,9 @@ class HuyaSite implements LiveSite {
   }
 
   Future<Map> _getRoomInfo(String roomId) async {
+
     var resultText = await HttpClient.instance.getText(
-      "https://m.huya.com/$roomId",
+      Uri.https("m.huya.com",'/$roomId').toString(),
       queryParameters: {},
       header: {
         "user-agent": kUserAgent,

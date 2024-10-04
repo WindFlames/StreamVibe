@@ -111,12 +111,13 @@ class FollowUserItem extends StatelessWidget {
   }
 
   String getStatus(int status) {
-    if (status == 0) {
-      return "读取中";
-    } else if (status == 1) {
-      return "未开播";
-    } else {
-      return "直播中";
+    switch(status) {
+      case 0:
+        return "读取中";
+      case 1:
+        return "未开播";
+      default:
+        return "直播中";
     }
   }
 }

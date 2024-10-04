@@ -46,7 +46,7 @@ class AccountPage extends GetView<AccountController> {
             title: const Text("斗鱼直播"),
             subtitle: const Text("无需登录"),
             enabled: false,
-            trailing: const Icon(Icons.chevron_right),
+            trailing: null,
           ),
           ListTile(
             leading: Image.asset(
@@ -57,7 +57,7 @@ class AccountPage extends GetView<AccountController> {
             title: const Text("虎牙直播"),
             subtitle: const Text("无需登录"),
             enabled: false,
-            trailing: const Icon(Icons.chevron_right),
+            trailing: null,
           ),
           ListTile(
             leading: Image.asset(
@@ -68,7 +68,7 @@ class AccountPage extends GetView<AccountController> {
             title: const Text("抖音直播"),
             subtitle: const Text("无需登录"),
             enabled: false,
-            trailing: const Icon(Icons.chevron_right),
+            trailing: null,
           ),
         ],
       ),

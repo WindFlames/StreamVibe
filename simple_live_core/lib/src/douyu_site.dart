@@ -19,16 +19,16 @@ import 'package:html_unescape/html_unescape.dart';
 
 class DouyuSite implements LiveSite {
   @override
-  String id = "douyu";
+  final String id = "douyu";
 
   @override
-  String name = "斗鱼直播";
+  final String name = "斗鱼直播";
 
   @override
   LiveDanmaku getDanmaku() => DouyuDanmaku();
 
   @override
-  Future<List<LiveCategory>> getCategores() async {
+  Future<List<LiveCategory>> getCategories() async {
     List<LiveCategory> categories = [];
     var result =
         await HttpClient.instance.getJson("https://m.douyu.com/api/cate/list");

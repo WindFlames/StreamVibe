@@ -30,10 +30,11 @@ class DBService extends GetxService {
   }
 
   History? getHistory(String id) {
-    if (historyBox.containsKey(id)) {
-      return historyBox.get(id);
-    }
-    return null;
+    return historyBox.get(id);
+    // if (historyBox.containsKey(id)) {
+    //   return historyBox.get(id);
+    // }
+    // return null;
   }
 
   Future addOrUpdateHistory(History history) async {

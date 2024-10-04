@@ -15,6 +15,7 @@ dependencies:
   # 框架、工具
   get: ^4.6.6 #状态管理、路由管理、国际化
   dio: ^5.4.3+1 #网络请求
+  http: ^1.2.2 #网络请求
   hive: 2.2.3 #持久化存储
   hive_flutter: 1.1.0 #持久化存储
   logger: ^2.0.2 #日志
@@ -74,6 +75,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  chewie: ^1.8.5
 
 dev_dependencies:
   flutter_lints: ^2.0.0

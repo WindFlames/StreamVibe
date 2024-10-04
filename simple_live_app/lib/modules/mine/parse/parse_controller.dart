@@ -7,6 +7,7 @@ import 'package:simple_live_app/app/constant.dart';
 import 'package:simple_live_app/app/log.dart';
 import 'package:simple_live_app/app/sites.dart';
 import 'package:simple_live_app/routes/app_navigation.dart';
+import 'package:http/http.dart' as http;
 
 class ParseController extends GetxController {
   final TextEditingController roomJumpToController = TextEditingController();
@@ -158,6 +159,7 @@ class ParseController extends GetxController {
   Future<String> getLocation(String url) async {
     try {
       if (url.isEmpty) return "";
+
       await Dio().get(
         url,
         options: Options(

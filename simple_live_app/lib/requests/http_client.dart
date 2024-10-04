@@ -4,7 +4,6 @@ import 'package:simple_live_app/requests/http_error.dart';
 
 class HttpClient {
   static HttpClient? _httpUtil;
-
   static HttpClient get instance {
     _httpUtil ??= HttpClient();
     return _httpUtil!;

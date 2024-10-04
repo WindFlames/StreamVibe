@@ -233,18 +233,24 @@ class LiveRoomPage extends GetView<LiveRoomController> {
   Widget buildMediaPlayer() {
     var boxFit = BoxFit.contain;
     double? aspectRatio;
-    if (AppSettingsController.instance.scaleMode.value == 0) {
-      boxFit = BoxFit.contain;
-    } else if (AppSettingsController.instance.scaleMode.value == 1) {
-      boxFit = BoxFit.fill;
-    } else if (AppSettingsController.instance.scaleMode.value == 2) {
-      boxFit = BoxFit.cover;
-    } else if (AppSettingsController.instance.scaleMode.value == 3) {
-      boxFit = BoxFit.contain;
-      aspectRatio = 16 / 9;
-    } else if (AppSettingsController.instance.scaleMode.value == 4) {
-      boxFit = BoxFit.contain;
-      aspectRatio = 4 / 3;
+    switch (AppSettingsController.instance.scaleMode.value) {
+      case 0:
+        boxFit = BoxFit.contain;
+        break;
+      case 1:
+        boxFit = BoxFit.fill;
+        break;
+      case 2:
+        boxFit = BoxFit.cover;
+        break;
+      case 3:
+        boxFit = BoxFit.contain;
+        aspectRatio = 16 / 9;
+        break;
+      case 4:
+        boxFit = BoxFit.contain;
+        aspectRatio = 4 / 3;
+        break;
     }
     return Stack(
       children: [

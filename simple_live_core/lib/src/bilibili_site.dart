@@ -17,10 +17,10 @@ import 'package:simple_live_core/src/model/live_category_result.dart';
 
 class BiliBiliSite implements LiveSite {
   @override
-  String id = "bilibili";
+  final String id = "bilibili";
 
   @override
-  String name = "哔哩哔哩直播";
+  final String name = "哔哩哔哩直播";
 
   String cookie = "";
   int userId = 0;
@@ -46,7 +46,7 @@ class BiliBiliSite implements LiveSite {
   }
 
   @override
-  Future<List<LiveCategory>> getCategores() async {
+  Future<List<LiveCategory>> getCategories() async {
     List<LiveCategory> categories = [];
     var result = await HttpClient.instance.getJson(
       "https://api.live.bilibili.com/room/v1/Area/getList",
@@ -469,6 +469,7 @@ class BiliBiliSite implements LiveSite {
     44,
     52
   ];
+
   Future<(String, String)> getWbiKeys() async {
     if (kImgKey.isNotEmpty && kSubKey.isNotEmpty) {
       return (kImgKey, kSubKey);

@@ -7,10 +7,10 @@ import 'package:simple_live_core/src/common/http_client.dart';
 
 class DouyinSite implements LiveSite {
   @override
-  String id = "douyin";
+  final String id = "douyin";
 
   @override
-  String name = "抖音直播";
+  final String name = "抖音直播";
 
   @override
   LiveDanmaku getDanmaku() => DouyinDanmaku();
@@ -49,7 +49,7 @@ class DouyinSite implements LiveSite {
   }
 
   @override
-  Future<List<LiveCategory>> getCategores() async {
+  Future<List<LiveCategory>> getCategories() async {
     List<LiveCategory> categories = [];
     var result = await HttpClient.instance.getText(
       "https://live.douyin.com/",

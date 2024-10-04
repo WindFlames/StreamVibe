@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:json/json.dart';
+@JsonCodable()
 class LiveCategory {
   final String name;
   final String id;
