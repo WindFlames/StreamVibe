@@ -257,11 +257,9 @@ class LiveRoomPage extends GetView<LiveRoomController> {
     return Stack(
       children: [
         //TODO: Video Player
-        Obx(()=> controller.videoPrepared.value?
-           VideoPlayer(controller: controller.videoController!)
-        :
-          const Center(child: CircularProgressIndicator())
-        ),
+        Obx(() => controller.videoPrepared.value
+            ? VideoPlayer(controller: controller.videoController!)
+            : const Center(child: CircularProgressIndicator())),
         //VideoPlayer(controller: controller.videoController),
         Obx(
           () => Visibility(

@@ -5,12 +5,12 @@ import 'package:simple_live_app/requests/http_error.dart';
 class HttpClient {
   static HttpClient? _httpUtil;
   static HttpClient get instance {
-    _httpUtil ??= HttpClient();
+    _httpUtil ??= HttpClient._internal();
     return _httpUtil!;
   }
 
   late Dio dio;
-  HttpClient() {
+  HttpClient._internal() {
     dio = Dio(
       BaseOptions(
         connectTimeout: const Duration(seconds: 20),

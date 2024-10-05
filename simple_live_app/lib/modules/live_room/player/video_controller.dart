@@ -185,6 +185,8 @@ class VideoController with ChangeNotifier {
           videoPlayerOptions: VideoPlayerOptions(
               allowBackgroundPlayback: allowBackgroundPlay,
               webOptions: const VideoPlayerWebOptions(allowRemotePlayback: false)));
+      await videoPlayerController.initialize();
+
       chewieController = ChewieController(
         videoPlayerController: videoPlayerController,
         isLive: true,

@@ -352,7 +352,7 @@ PlayerGestureControlMixin
 
     try {
       var playQualites =
-          await site.liveSite.getPlayQualites(detail: detail.value!);
+          await site.liveSite.getPlayQualities(detail: detail.value!);
 
       if (playQualites.isEmpty) {
         SmartDialog.showToast("无法读取播放清晰度");

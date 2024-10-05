@@ -29,4 +29,22 @@ class LiveAnchorItem {
       "liveStatus": liveStatus,
     });
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "roomId": this.roomId,
+      "avatar": this.avatar,
+      "userName": this.userName,
+      "liveStatus": this.liveStatus,
+    };
+  }
+
+  factory LiveAnchorItem.fromJson(Map<String, dynamic> json) {
+    return LiveAnchorItem(
+      roomId: json["roomId"],
+      avatar: json["avatar"],
+      userName: json["userName"],
+      liveStatus: json["liveStatus"].toLowerCase() == 'true',
+    );
+  }
 }

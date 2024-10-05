@@ -105,6 +105,19 @@ class LiveSuperChatMessage {
     required this.userName,
   });
 
+  Map<String, dynamic> toJson() {
+    return {
+      "userName": this.userName,
+      "face": this.face,
+      "message": this.message,
+      "price": this.price,
+      "startTime": this.startTime.toIso8601String(),
+      "endTime": this.endTime.toIso8601String(),
+      "backgroundColor": this.backgroundColor,
+      "backgroundBottomColor": this.backgroundBottomColor,
+    };
+  }
+
   @override
   String toString() {
     return json.encode({

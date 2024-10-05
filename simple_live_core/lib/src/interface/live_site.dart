@@ -39,7 +39,7 @@ abstract class LiveSite {
   Future<LiveRoomDetail> getRoomDetail({required String roomId});
 
   /// 读取房间清晰度
-  Future<List<LivePlayQuality>> getPlayQualites(
+  Future<List<LivePlayQuality>> getPlayQualities(
       {required LiveRoomDetail detail});
 
   /// 读取播放链接
